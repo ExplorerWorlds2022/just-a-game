@@ -8,13 +8,14 @@ def game():
     for turn in range(9):
         draw_field()
         player_turn = turn % 2 + 1
-        print(f"{player_turn} игрок ходит:")
-        try:
-            x, y = map(int, input().split())
-        except:       
-            while check_input(x, y) == False:
-                print('Неверный ввод данных! Введите координаты поля в формате "2 2"')
+        print(f"{player_turn} игрок ходите: введите координаты новой клетки")
+        while True:
+            try:
                 x, y = map(int, input().split())
+                if check_input():
+                    break
+            except:       
+                print('Неверный формат данных! Введите координаты клетки в формате "2 2"')
 
         field[x - 1][y - 1] = "X" if player_turn == 1 else "O"
         if check_win():
@@ -22,9 +23,10 @@ def game():
             
     if check_win():
         print(f'Победил {player_turn} игрок!')
-        draw_field()
     else:
         print('Ничья!')
+
+    draw_field()
 
 
 def draw_field():
@@ -39,23 +41,26 @@ def check_win():
             return True
 
     for column in range(3):
-        if field[0][column] == field[1][column] == field[2][column] == "X" or \
-            field[0][column] == field[1][column] == field[2][column] == "O":
+        if field[0][column] == field[1][column] == field[2][column] and field[0][column] != ' ':
             return True
         
-    if field[0][0] == field[1][1] == field[2][2] == 'X' or \
-    field[0][0] == field[1][1] == field[2][2] == 'X' or \
-    field[0][2] == field[1][1] == field[2][0] == 'O' or \
-    field[0][2] == field[1][1] == field[2][0] == 'O':
+    if field[0][0] == field[1][1] == field[2][2] and field[0][0] != ' ' or \
+    field[0][2] == field[1][1] == field[2][0] and field[0][2] != ' ':
         return True
     
     return False
 
 
 def check_input(x, y):
-    if type(x) == type(y) == int and 1 <= x <= 3 and 1 <= y <= 3 and field[x-1][y-1] == ' ':
-        return True
-    return False
+    if (1 <= x <= 3 and 1 <= y <= 3) == False:
+        print('Такой клетки не существует!')
+        return False
+    elif field[x-1][y-1] != ' ':
+        print('Это поле уже занято!')
+        return False
+    
+    return True
+
 
 print(
     '''Хотите убить немного времени с приятелем? Вы по адресу!
